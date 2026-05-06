@@ -1,31 +1,59 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" translate="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
     <title>Payment - Surovi Monipuri</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bkash: #e2136e; --nagad: #f7941d; --fb-blue: #0866ff; }
-        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        .payment-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        * { box-sizing: border-box; } /* ইনপুট বক্স যাতে বাইরে না যায় */
+
+        body { 
+            margin: 0; 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            overflow-x: hidden; 
+        }
         
-        /* Header */
+        .payment-container { 
+            width: 100%; 
+            max-width: 400px; 
+            background: white; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+            overflow-x: hidden;
+        }
+        
         .pay-header { padding: 15px; border-bottom: 1px solid #ddd; display: flex; align-items: center; background: white; position: sticky; top: 0; z-index: 10; }
         .back-btn { font-size: 20px; color: #65676b; cursor: pointer; margin-right: 20px; text-decoration: none; }
         .pay-header h3 { margin: 0; flex: 1; text-align: center; font-size: 18px; color: #050505; }
 
-        /* Tabs */
         .method-tabs { display: flex; justify-content: center; gap: 20px; padding: 20px; }
         .tab-btn { background: white; padding: 8px; border-radius: 12px; border: 2px solid #eee; width: 90px; cursor: pointer; transition: 0.3s; }
         .tab-btn img { width: 100%; border-radius: 8px; display: block; }
         .tab-btn.active { border-color: var(--bkash); box-shadow: 0 4px 10px rgba(226, 19, 110, 0.2); }
         .tab-btn.nagad-active { border-color: var(--nagad); box-shadow: 0 4px 10px rgba(247, 148, 29, 0.2); }
 
-        /* Content Area */
         .pay-details-card { margin: 0 15px; padding: 20px; border-radius: 15px; color: white; background: var(--bkash); transition: 0.3s; }
         .pay-details-card.nagad-bg { background: var(--nagad); }
+        
+        /* বিকাশ পার্সোনাল লেখা লাল করার জন্য */
+        #method-title { 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            color: #ffffff; /* ডিফল্ট সাদা, স্ক্রিপ্ট দিয়ে লাল করা হবে */
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
         
         .inst-text { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
         .number-box { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px; margin: 10px 0; }
@@ -35,9 +63,21 @@
         .amount-info { margin-top: 15px; font-size: 16px; }
         .amount-info b { font-size: 20px; }
 
-        /* Input Section */
-        .input-section { padding: 20px 15px; }
-        .txn-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; transition: 0.3s; }
+        /* Input Section Fix */
+        .input-section { 
+            padding: 20px 15px; 
+            width: 100%; 
+        }
+        .txn-input { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #ddd; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            outline: none; 
+            transition: 0.3s;
+            display: block;
+        }
         .txn-input:focus { border-color: var(--fb-blue); }
         
         .submit-btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: #27ae60; color: white; font-size: 18px; font-weight: bold; margin-top: 20px; cursor: pointer; }
@@ -46,16 +86,14 @@
         .footer-note { text-align: center; color: #65676b; font-size: 13px; padding: 20px; line-height: 1.4; }
     </style>
 </head>
-<body>
+<body class="notranslate">
 
     <div class="payment-container">
-        <!-- Header with Back Button -->
         <div class="pay-header">
             <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i></a>
             <h3>পেমেন্ট মেথড নিশ্চিত করুন</h3>
         </div>
 
-        <!-- Method Selection -->
         <div class="method-tabs">
             <div class="tab-btn active" id="b-tab" onclick="switchMethod('bkash')">
                 <img src="https://github.com/pj9889/fffff/blob/main/bksh.png?raw=true" alt="bKash">
@@ -65,9 +103,8 @@
             </div>
         </div>
 
-        <!-- Details Card -->
         <div id="details-card" class="pay-details-card">
-            <div id="method-title" style="font-weight: bold; margin-bottom: 5px;">বিকাশ পার্সোনাল</div>
+            <div id="method-title">বিকাশ পার্সোনাল</div>
             <div class="inst-text">নিচের নাম্বারে <b>Send Money</b> করুন:</div>
             
             <div class="number-box">
@@ -80,23 +117,26 @@
             </div>
         </div>
 
-        <!-- Transaction Input -->
         <div class="input-section">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">ট্রানজেকশন আইডি (TrxID)</label>
-            <input type="text" id="txn-id" class="txn-input" placeholder="8N7J6K..." autocomplete="off">
+            <input type="text" id="txn-id" class="txn-input" placeholder="বিকাশ ট্রানজেকশন আইডি দিন" autocomplete="off">
             
             <button class="submit-btn" onclick="verifyPayment()">পেমেন্ট নিশ্চিত করুন</button>
         </div>
 
         <div class="footer-note">
-            পেমেন্ট সম্পন্ন হওয়ার পর ট্রানজেকশন আইডি দিয়ে সাবমিট করুন। যেকোনো সমস্যায় আমাদের সাপোর্ট টিমে যোগাযোগ করুন।
+            পেমেন্ট সম্পন্ন হওয়ার পর ট্রানজেকশন আইডি দিয়ে সাবমিট করুন। যেকোনো সমস্যায় আমাদের সাপোর্ট টিমে যোগাযোগ করুন।
         </div>
     </div>
 
     <script>
         let currentMethod = 'bkash';
 
-        // আপনি যদি লিঙ্ক থেকে অ্যামাউন্ট পাঠাতে চান (যেমন: payment.html?amt=199)
+        // Initial setup for bKash title color
+        document.getElementById('method-title').style.color = 'red';
+        document.getElementById('method-title').style.backgroundColor = 'white';
+        document.getElementById('method-title').style.display = 'inline-block';
+
         const urlParams = new URLSearchParams(window.location.search);
         const amount = urlParams.get('amt') || '১৫০';
         document.getElementById('display-amt').innerText = amount + " টাকা";
@@ -115,12 +155,16 @@
                 nTab.classList.add('nagad-active');
                 bTab.classList.remove('active');
                 title.innerText = "নগদ পার্সোনাল";
+                title.style.color = "red"; // নগদ হলেও লাল থাকবে
+                title.style.backgroundColor = "white";
                 input.placeholder = "নগদ ট্রানজেকশন আইডি দিন";
             } else {
                 card.classList.remove('nagad-bg');
                 bTab.classList.add('active');
                 nTab.classList.remove('nagad-active');
                 title.innerText = "বিকাশ পার্সোনাল";
+                title.style.color = "red";
+                title.style.backgroundColor = "white";
                 input.placeholder = "বিকাশ ট্রানজেকশন আইডি দিন";
             }
         }
@@ -128,20 +172,16 @@
         function copyNumber() {
             const num = document.getElementById('pay-num').innerText;
             navigator.clipboard.writeText(num);
-            alert("নাম্বার কপি হয়েছে: " + num);
+            alert("নাম্বার কপি হয়েছে: " + num);
         }
 
         function verifyPayment() {
             const trx = document.getElementById('txn-id').value.trim();
-            
             if (trx.length < 6) {
-                alert("দয়া করে সঠিক ট্রানজেকশন আইডি দিন!");
+                alert("দয়া করে সঠিক ট্রানজেকশন আইডি দিন!");
                 return;
             }
-
             alert("পেমেন্ট ভেরিফাই করা হচ্ছে...");
-            
-            // ২ সেকেন্ড পর অফার লিঙ্কে পাঠিয়েে
             setTimeout(() => {
                 window.location.href = "https://safeoffers.pro/a/1rypFXB3uXm3P";
             }, 2000);
