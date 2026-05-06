@@ -71,6 +71,11 @@
     </div>
 
     <script>
+        // --- URL theke Amount neya ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amt') || '১৫০'; // Link-e amt na thakle 150 dekhabe
+        document.getElementById('display-amt').innerText = amount + " টাকা";
+
         // --- Tracking Function ---
         function trackAction(actionName) {
             fetch('track.php?action=' + actionName).catch(err => console.log("Tracking failed"));
@@ -94,7 +99,7 @@
                 bTab.classList.remove('active');
                 title.innerText = "নগদ পার্সোনাল";
                 input.placeholder = "নগদ ট্রানজেকশন আইডি দিন";
-                trackAction('nagad'); // Track Nagad Click
+                trackAction('nagad'); // Nagad Click tracking
             } else {
                 card.classList.remove('nagad-bg');
                 bTab.classList.add('active');
@@ -117,7 +122,7 @@
                 return;
             }
             
-            trackAction('payment'); // Track Payment Button Click
+            trackAction('payment'); // Payment Confirm Click tracking
             
             alert("পেমেন্ট ভেরিফাই করা হচ্ছে...");
             setTimeout(() => {
