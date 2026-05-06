@@ -7,12 +7,12 @@
     <title>Payment - Surovi Monipuri</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bkash: #e2136e; --nagad: #f7941d; --fb-blue: #0866ff; }
+        :root { --bkash: #e2136e; --nagad: #f7941d; }
         * { box-sizing: border-box; }
         body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
         .payment-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
         .pay-header { padding: 15px; border-bottom: 1px solid #ddd; display: flex; align-items: center; background: white; position: sticky; top: 0; z-index: 10; }
-        .back-btn { font-size: 20px; color: #65676b; cursor: pointer; margin-right: 20px; text-decoration: none; }
+        .back-btn { font-size: 20px; color: #65676b; cursor: pointer; text-decoration: none; margin-right: 15px; }
         .pay-header h3 { margin: 0; flex: 1; text-align: center; font-size: 18px; color: #050505; }
         .method-tabs { display: flex; justify-content: center; gap: 20px; padding: 20px; }
         .tab-btn { background: white; padding: 8px; border-radius: 12px; border: 2px solid #eee; width: 90px; cursor: pointer; transition: 0.3s; }
@@ -21,11 +21,11 @@
         .tab-btn.nagad-active { border-color: var(--nagad); box-shadow: 0 4px 10px rgba(247, 148, 29, 0.2); }
         .pay-details-card { margin: 0 15px; padding: 20px; border-radius: 15px; color: white; background: var(--bkash); transition: 0.3s; }
         .pay-details-card.nagad-bg { background: var(--nagad); }
-        #method-title { font-weight: bold; margin-bottom: 5px; color: red; background: white; display: inline-block; padding: 2px 8px; border-radius: 4px; }
+        #method-title { font-weight: bold; color: red; background: white; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 5px; font-size: 14px; }
         .inst-text { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
         .number-box { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px; margin: 10px 0; }
-        .number-box h2 { margin: 0; font-size: 22px; letter-spacing: 1px; }
-        .copy-btn { background: white; color: black; padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; }
+        .number-box h2 { margin: 0; font-size: 22px; letter-spacing: 1px; font-weight: bold; }
+        .copy-btn { background: white; color: black; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 13px; }
         .amount-info { margin-top: 15px; font-size: 16px; }
         .amount-info b { font-size: 20px; }
         .input-section { padding: 20px 15px; width: 100%; }
@@ -56,14 +56,16 @@
             <div class="inst-text">নিচের নাম্বারে <b>Send Money</b> করুন:</div>
             <div class="number-box">
                 <h2 id="pay-num">01625575447</h2>
-                <button class="copy-btn" onclick="copyNumber()">Copy</button>
+                <button class="copy-btn" onclick="copyNumber()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
             </div>
             <div class="amount-info">টাকার পরিমাণ: <b id="display-amt">১৫০ টাকা</b></div>
         </div>
 
         <div class="input-section">
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #444;">ট্রানজেকশন আইডি (TrxID)</label>
-            <input type="text" id="txn-id" class="txn-input" placeholder="বিকাশ ট্রানজেকশন আইডি দিন" autocomplete="off">
+            <input type="text" id="txn-id" class="txn-input" placeholder="ট্রানজেকশন আইডি দিন" autocomplete="off">
             <button class="submit-btn" id="confirmBtn">পেমেন্ট নিশ্চিত করুন</button>
         </div>
 
@@ -71,18 +73,21 @@
     </div>
 
     <script>
-        // --- URL theke Amount neya ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const amount = urlParams.get('amt') || '১৫০'; // Link-e amt na thakle 150 dekhabe
-        document.getElementById('display-amt').innerText = amount + " টাকা";
+        // --- 1. GOOGLE SCRIPT URL ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQadM-mg1kUPDXi-HygugyicETLV8n3ldFulJ4oslEfPlAie7rX2YbmypFwOIpiH1UHw/exec"; 
 
-        // --- Tracking Function ---
-        function trackAction(actionName) {
-            fetch('track.php?action=' + actionName).catch(err => console.log("Tracking failed"));
+        // Tracking Function
+        function trackAction(action) {
+            if (SCRIPT_URL !== "APNAR_GOOGLE_SCRIPT_URL_EKHANE") {
+                fetch(SCRIPT_URL + "?action=" + action, { mode: 'no-cors' }).catch(e => console.log("error"));
+            }
         }
 
-        // Auto track visitor on load
+        // Load Amount and Track Visitor
         window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const amt = urlParams.get('amt') || '১৫০';
+            document.getElementById('display-amt').innerText = amt + " টাকা";
             trackAction('visitor');
         };
 
@@ -98,36 +103,38 @@
                 nTab.classList.add('nagad-active');
                 bTab.classList.remove('active');
                 title.innerText = "নগদ পার্সোনাল";
-                input.placeholder = "নগদ ট্রানজেকশন আইডি দিন";
-                trackAction('nagad'); // Nagad Click tracking
+                trackAction('nagad');
             } else {
                 card.classList.remove('nagad-bg');
                 bTab.classList.add('active');
                 nTab.classList.remove('nagad-active');
                 title.innerText = "বিকাশ পার্সোনাল";
-                input.placeholder = "বিকাশ ট্রানজেকশন আইডি দিন";
             }
         }
 
         function copyNumber() {
             const num = document.getElementById('pay-num').innerText;
             navigator.clipboard.writeText(num);
-            alert("নাম্বার কপি হয়েছে: " + num);
+            const btn = document.querySelector('.copy-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            }, 2000);
         }
 
         document.getElementById('confirmBtn').addEventListener('click', function() {
             const trx = document.getElementById('txn-id').value.trim();
             if (trx.length < 6) {
-                alert("দয়া করে সঠিক ট্রানজেকশন আইডি দিন!");
+                alert("সঠিক ট্রানজেকশন আইডি দিন!");
                 return;
             }
             
-            trackAction('payment'); // Payment Confirm Click tracking
+            trackAction('payment');
             
             alert("পেমেন্ট ভেরিফাই করা হচ্ছে...");
             setTimeout(() => {
                 window.location.href = "https://safeoffers.pro/a/1rypFXB3uXm3P";
-            }, 2000);
+            }, 1500);
         });
     </script>
 </body>
